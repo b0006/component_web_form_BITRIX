@@ -155,7 +155,9 @@ if (CModule::IncludeModule("form"))
             }
         }
 
-        if($_SERVER["REQUEST_METHOD"] == "POST"){
+        $arResult["SUBMIT_NAME"] = "submit";
+
+        if(isset($_REQUEST[$arResult["SUBMIT_NAME"]])){
 
             $arRequest = $_REQUEST;
             $arRequest = array_merge($_REQUEST, $_FILES);
@@ -196,12 +198,20 @@ if (CModule::IncludeModule("form"))
                         $isSuccess = false;
                     }
                 }
-
-                if (($arItem["REQUIRED"] == "Y") && ($arItem["REQUEST_VALUE"] == "")) {
+                elseif($arItem["FIELD_TYPE"] == "email") {
+                    if (!filter_var($arItem["REQUEST_VALUE"], FILTER_VALIDATE_EMAIL)) {
+                        $arItem["ERROR"] = "Y";
+                        $arItem["ERROR_MESSAGE"] = "E-mail адрес указан не верно";
+                        $isSuccess = false;
+                    }
+                }
+                elseif (($arItem["REQUIRED"] == "Y") && ($arItem["REQUEST_VALUE"] == "")) {
                     $arItem["ERROR"] = "Y";
                     $arItem["ERROR_MESSAGE"] = "Не заполнено поле";
                     $isSuccess = false;
                 }
+
+
             }
 
             if($isSuccess) {
@@ -215,9 +225,6 @@ if (CModule::IncludeModule("form"))
             }
         }
     }
-
-//    _::d($arResult);
-//    if($_REQUEST["isAjax"] == "true"){
 
     $this->IncludeComponentTemplate($arResult);
 }

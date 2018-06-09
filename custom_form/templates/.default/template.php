@@ -1,9 +1,5 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 ?>
-<script
-        src="https://code.jquery.com/jquery-3.3.1.js"
-        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-        crossorigin="anonymous"></script>
 <script>
     var requiredFields = [];
 </script>
@@ -102,7 +98,7 @@
 
                             <?elseif($arQuestion["FIELD_TYPE"] == "email"):?>
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
-                                    <input type="email" class="form-control" id="email_<?=$arQuestion["ID"]?>" name="<?=$arQuestion["INPUT_NAME"]?>" value="<?=$arQuestion["REQUEST_VALUE"]?>">
+                                    <input type="text" class="form-control" id="email_<?=$arQuestion["ID"]?>" name="<?=$arQuestion["INPUT_NAME"]?>" value="<?=$arQuestion["REQUEST_VALUE"]?>">
                                 <?endforeach;?>
                             <?elseif($arQuestion["FIELD_TYPE"] == "multiselect"):?>
                                 <select multiple="" class="form-control" id="multiselect_<?=$arQuestion["ID"]?>" name="<?=$arQuestion["INPUT_NAME"]?>">
@@ -127,6 +123,10 @@
                                         </div>
                                     </div>
 
+                                    <script>
+                                        $('#date_<?=$arQuestion["ID"]?>').mask("99.99.9999");
+                                    </script>
+
                                     <?endforeach;?>
                             <?elseif($arQuestion["FIELD_TYPE"] == "image"):?>
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
@@ -149,81 +149,89 @@
                     </div>
                 </div>
             <?endforeach;?>
-            <input class="btn btn-primary" type="submit" value="<?=$arResult["arForm"]["BUTTON"]?>">
+
+            <input type="hidden" name="isAjax" value="<?if($arParams["AJAX"] == "Y"):?>Y<?else:?>N<?endif;?>">
+            <input class="btn btn-primary" name="<?=$arResult["SUBMIT_NAME"]?>" type="submit" value="<?=$arResult["arForm"]["BUTTON"]?>">
         </div>
     </div>
 </form>
 
-<script>
-    $( document ).ready(function() {
-        var id_form = "<?=$arResult["arForm"]["SID"]?>";
+<?if($arParams["AJAX"] == "Y"):?>
+    <script>
+        $( document ).ready(function() {
+            var id_form = "<?=$arResult["arForm"]["SID"]?>";
 
-        $("#"+ id_form).submit(function(e) {
-            e.preventDefault();
-            var that = this;
+            function validation_web_form(required_fields, form_data) {
+                var isSuccess = true;
 
-            var isSuccess = true;
+                required_fields.forEach(function (req_value, req_index) {
+                    var error_field = $("#" + req_value.error_field_id);
+                    error_field.text("");
 
-            var formData = new FormData(this);
+                    var arValue = form_data.getAll(req_value.field_name);
 
-            requiredFields.forEach(function (req_value, req_index) {
-                var error_field = $("#" + req_value.error_field_id);
-                error_field.text("");
+                    if(arValue.length === 0){
+                        error_field.text("Заполните поле");
+                        isSuccess = false;
+                    }
+                    else if(arValue.length > 0) {
+                        if(req_value.type === "image") {
 
-                var arValue = formData.getAll(req_value.field_name);
-
-                if(arValue.length === 0){
-                    error_field.text("Заполните поле");
-                    isSuccess = false;
-                }
-                else if(arValue.length > 0) {
-                    if(req_value.type === "image") {
-
-                        arValue.forEach(function (image, index) {
-                            var mime_type = image.type;
-                            if(mime_type !== undefined) {
-                                var isImage = mime_type.indexOf("image");
-                                if (isImage === -1) {
+                            arValue.forEach(function (image, index) {
+                                var mime_type = image.type;
+                                if(mime_type !== undefined) {
+                                    var isImage = mime_type.indexOf("image");
+                                    if (isImage === -1) {
+                                        error_field.text("Заполните поле");
+                                        isSuccess = false;
+                                    }
+                                }
+                                else if((mime_type === "") || (mime_type === undefined)) {
                                     error_field.text("Заполните поле");
                                     isSuccess = false;
                                 }
-                            }
-                            else if((mime_type === "") || (mime_type === undefined)) {
-                                error_field.text("Заполните поле");
-                                isSuccess = false;
-                            }
-                        });
+                            });
+                        }
+                        else {
+                            arValue.forEach(function (value, index) {
+                                if (value === "") {
+                                    error_field.text("Заполните поле");
+                                    isSuccess = false;
+                                }
+                            });
+                        }
+
                     }
-                    else {
-                        arValue.forEach(function (value, index) {
-                            if (value === "") {
-                                error_field.text("Заполните поле");
-                                isSuccess = false;
-                            }
-                        });
-                    }
+                });
+                return isSuccess;
+            }
+
+            $("#"+ id_form).submit(function(e) {
+                e.preventDefault();
+                var that = this;
+
+                var formData = new FormData(this);
+                var isSuccess = validation_web_form(requiredFields, formData);
+
+                if(isSuccess) {
+                    $.ajax({
+                        url: that.action,
+                        type: that.method,
+                        data: formData,
+                        success: function (data) {
+                            that.reset();
+                            alert("<?=$arParams["SUCCESS_URL"]?>");
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                }
+                else {
 
                 }
             });
-
-            if(isSuccess) {
-                $.ajax({
-                    url: that.action,
-                    type: that.method,
-                    data: formData,
-                    success: function (data) {
-                        that.reset();
-                        alert("<?=$arParams["SUCCESS_URL"]?>");
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                });
-            }
-            else {
-
-            }
         });
-    });
 
-</script>
+    </script>
+<?endif;?>
