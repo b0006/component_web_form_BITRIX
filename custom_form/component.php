@@ -157,7 +157,7 @@ if (CModule::IncludeModule("form"))
 
         $arResult["SUBMIT_NAME"] = "submit";
 
-        if(isset($_REQUEST[$arResult["SUBMIT_NAME"]])){
+        if( (isset($_REQUEST[$arResult["SUBMIT_NAME"]])) || ($_REQUEST["isAjax"] == "Y")){
 
             $arRequest = $_REQUEST;
             $arRequest = array_merge($_REQUEST, $_FILES);
@@ -176,42 +176,78 @@ if (CModule::IncludeModule("form"))
             foreach ($arResult["QUESTIONS"] as &$arItem) {
 
                 if($arItem["FIELD_TYPE"] == "image"){
-                    $isImage = CFile::IsImage($arItem["REQUEST_VALUE"]["name"]);
-                    if ((($arItem["REQUIRED"] == "Y") && ($arItem["REQUEST_VALUE"]["name"] == "")) || (!$isImage)) {
-                        $arItem["ERROR"] = "Y";
-                        $arItem["ERROR_MESSAGE"] = "Ошибка выбора картинки";
-                        $isSuccess = false;
+                    if($arItem["REQUIRED"] == "Y") {
+                        $isImage = CFile::IsImage($arItem["REQUEST_VALUE"]["name"]);
+                        if (!$isImage) {
+                            $arItem["ERROR"] = "Y";
+                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_IMG");
+                            $isSuccess = false;
+                        }
+                    }
+                    elseif(($arItem["REQUIRED"] == "N") && ($arItem["REQUEST_VALUE"]["name"] != "")) {
+                        $isImage = CFile::IsImage($arItem["REQUEST_VALUE"]["name"]);
+                        if (!$isImage) {
+                            $arItem["ERROR"] = "Y";
+                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_IMG");
+                            $isSuccess = false;
+                        }
                     }
                 }
                 elseif($arItem["FIELD_TYPE"] == "file"){
                     if (($arItem["REQUIRED"] == "Y") && ($arItem["REQUEST_VALUE"]["name"] == "")) {
                         $arItem["ERROR"] = "Y";
-                        $arItem["ERROR_MESSAGE"] = "Файл не выбран";
+                        $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_FILE");
                         $isSuccess = false;
                     }
                 }
                 elseif($arItem["FIELD_TYPE"] == "url"){
-                    if (!preg_match("/^(http|https|ftp):\/\//i", $arItem["REQUEST_VALUE"]))
-                    {
+                    if($arItem["REQUIRED"] == "Y") {
+                        if (!preg_match("/^(http|https|ftp):\/\//i", $arItem["REQUEST_VALUE"])) {
+                            $arItem["ERROR"] = "Y";
+                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_URL");
+                            $isSuccess = false;
+                        }
+                    }
+                    elseif(($arItem["REQUIRED"] == "N") && ($arItem["REQUEST_VALUE"] != "")) {
                         $arItem["ERROR"] = "Y";
-                        $arItem["ERROR_MESSAGE"] = "Неккоректный URL";
+                        $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_URL");
                         $isSuccess = false;
                     }
                 }
                 elseif($arItem["FIELD_TYPE"] == "email") {
-                    if (!filter_var($arItem["REQUEST_VALUE"], FILTER_VALIDATE_EMAIL)) {
+                    if($arItem["REQUIRED"] == "Y") {
+                        if (!filter_var($arItem["REQUEST_VALUE"], FILTER_VALIDATE_EMAIL)) {
+                            $arItem["ERROR"] = "Y";
+                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_EMAIL");
+                            $isSuccess = false;
+                        }
+                    }
+                    elseif(($arItem["REQUIRED"] == "N") && ($arItem["REQUEST_VALUE"] != "")) {
                         $arItem["ERROR"] = "Y";
-                        $arItem["ERROR_MESSAGE"] = "E-mail адрес указан не верно";
+                        $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_EMAIL");
                         $isSuccess = false;
                     }
                 }
                 elseif (($arItem["REQUIRED"] == "Y") && ($arItem["REQUEST_VALUE"] == "")) {
                     $arItem["ERROR"] = "Y";
-                    $arItem["ERROR_MESSAGE"] = "Не заполнено поле";
+                    $arItem["ERROR_MESSAGE"] =  GetMessage("FORM_ERROR_FIELD_TEXT");
                     $isSuccess = false;
                 }
 
 
+            }
+
+            if($arParams["USE_RECAPTCHA"] == "Y") {
+
+                $recaptcha = new \ReCaptcha\ReCaptcha(RE_SEC_KEY);
+                $resp = $recaptcha->verify($_REQUEST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
+
+                if (!$resp->isSuccess()) {
+                    foreach ($resp->getErrorCodes() as $code) {
+                        $isSuccess = false;
+                        $arResult["ERROR_MESSAGE_RECAPTCHA"] = "Не пройдена проверка безопасности";
+                    }
+                }
             }
 
             if($isSuccess) {

@@ -1,15 +1,8 @@
 <?
-$MESS ['FORM_REQUIRED_FIELDS'] = "Required fields";
-$MESS ['FORM_APPLY'] = "Apply";
-$MESS ['FORM_ADD'] = "Add";
-$MESS ['FORM_ACCESS_DENIED'] = "Web-form access denied.";
-$MESS ['FORM_DATA_SAVED1'] = "Thank you. Your application form #";
-$MESS ['FORM_DATA_SAVED2'] = " was received.";
-$MESS ['FORM_MODULE_NOT_INSTALLED'] = "Web-form module is not installed.";
-$MESS ['FORM_NOT_FOUND'] = "Web-form is not found.";
-$MESS ['FORM_PUBLIC_ICON_EDIT_TPL'] = "Edit Web-form template";
-$MESS ['FORM_PUBLIC_ICON_EDIT'] = "Edit Web-form parameters";
-$MESS ['FORM_NOTE_ADDOK'] = "Thank you. 
-
-Your application form #RESULT_ID# was received.";
+$MESS ['FORM_ERROR_FIELD_IMG'] = "Error of choosing image";
+$MESS ['FORM_ERROR_FIELD_FILE'] = "File wasn't chosen";
+$MESS ['FORM_ERROR_FIELD_URL'] = "Incorrect URL";
+$MESS ['FORM_ERROR_FIELD_EMAIL'] = "E-mail isn't right";
+$MESS ['FORM_ERROR_FIELD_TEXT'] = "Required field";
+$MESS ['FORM_MODULE_NOT_INSTALLED'] = "A module of web-form not installed";
 ?>

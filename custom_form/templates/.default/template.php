@@ -150,6 +150,16 @@
                 </div>
             <?endforeach;?>
 
+            <?if($arParams["USE_RECAPTCHA"] == "Y"):?>
+
+                <?if(isset($arResult["ERROR_MESSAGE_RECAPTCHA"])):?>
+                    <?=$arResult["ERROR_MESSAGE_RECAPTCHA"]?>
+                <?endif;?>
+
+                <small id="g-recaptcha-error"></small>
+                <div class="g-recaptcha" data-sitekey="<?=RE_SITE_KEY?>"></div>
+            <?endif;?>
+
             <input type="hidden" name="isAjax" value="<?if($arParams["AJAX"] == "Y"):?>Y<?else:?>N<?endif;?>">
             <input class="btn btn-primary" name="<?=$arResult["SUBMIT_NAME"]?>" type="submit" value="<?=$arResult["arForm"]["BUTTON"]?>">
         </div>
@@ -161,8 +171,19 @@
         $( document ).ready(function() {
             var id_form = "<?=$arResult["arForm"]["SID"]?>";
 
-            function validation_web_form(required_fields, form_data) {
+            function validation_web_form(required_fields, form_data, captcha = "none") {
                 var isSuccess = true;
+
+                if(captcha !== "none"){
+                    if(!captcha.length){
+                        isSuccess = false;
+                        $("#g-recaptcha-error").text("Ошибка проверки безопасности");
+                    }
+                    else {
+                        $("#g-recaptcha-error").text("");
+                        grecaptcha.reset();
+                    }
+                }
 
                 required_fields.forEach(function (req_value, req_index) {
                     var error_field = $("#" + req_value.error_field_id);
@@ -207,11 +228,13 @@
             }
 
             $("#"+ id_form).submit(function(e) {
+                var captcha = grecaptcha.getResponse();
+
                 e.preventDefault();
                 var that = this;
 
                 var formData = new FormData(this);
-                var isSuccess = validation_web_form(requiredFields, formData);
+                var isSuccess = validation_web_form(requiredFields, formData, captcha);
 
                 if(isSuccess) {
                     $.ajax({
@@ -219,6 +242,7 @@
                         type: that.method,
                         data: formData,
                         success: function (data) {
+                            grecaptcha.reset();
                             that.reset();
                             alert("<?=$arParams["SUCCESS_URL"]?>");
                         },
@@ -226,9 +250,6 @@
                         contentType: false,
                         processData: false
                     });
-                }
-                else {
-
                 }
             });
         });
