@@ -35,6 +35,7 @@ if (CModule::IncludeModule("form"))
                 array(),
                 $is_filtered
             );
+
             while ($arAnswer = $rsAnswers->Fetch()) {
                 $arResult["QUESTIONS"][$arAnswer["QUESTION_ID"]]["ANSWERS"][] = $arAnswer;
                 $arResult["QUESTIONS"][$arAnswer["QUESTION_ID"]]["FIELD_TYPE"] = $arAnswer["FIELD_TYPE"];
@@ -44,11 +45,11 @@ if (CModule::IncludeModule("form"))
         foreach ($arResult["QUESTIONS"] as &$arItem){
 
             if(($arItem["FIELD_TYPE"] == "text") || ($arItem["FIELD_TYPE"] == "textarea")) {
-                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
+//                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
 
                 foreach ($arItem["ANSWERS"] as &$answer){
                     $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
+                    $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
                 }
 
@@ -157,6 +158,12 @@ if (CModule::IncludeModule("form"))
 
         $arResult["SUBMIT_NAME"] = "submit";
 
+        if($arParams["USE_CAPTCHA"] == "bitrix") {
+            include_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/classes/general/captcha.php");
+            $code = $APPLICATION->CaptchaGetCode();
+            $arResult["CAPTCHA_CODE"] = $code;
+        }
+
         if( (isset($_REQUEST[$arResult["SUBMIT_NAME"]])) || ($_REQUEST["isAjax"] == "Y")){
 
             $arRequest = $_REQUEST;
@@ -174,7 +181,6 @@ if (CModule::IncludeModule("form"))
             $isSuccess = true;
 
             foreach ($arResult["QUESTIONS"] as &$arItem) {
-
                 if($arItem["FIELD_TYPE"] == "image"){
                     if($arItem["REQUIRED"] == "Y") {
                         $isImage = CFile::IsImage($arItem["REQUEST_VALUE"]["name"]);
@@ -201,20 +207,19 @@ if (CModule::IncludeModule("form"))
                     }
                 }
                 elseif($arItem["FIELD_TYPE"] == "url"){
-                    if($arItem["REQUIRED"] == "Y") {
-                        if (!preg_match("/^(http|https|ftp):\/\//i", $arItem["REQUEST_VALUE"])) {
-                            $arItem["ERROR"] = "Y";
-                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_URL");
-                            $isSuccess = false;
-                        }
-                    }
-                    elseif(($arItem["REQUIRED"] == "N") && ($arItem["REQUEST_VALUE"] != "")) {
+                    if(($arItem["REQUIRED"] == "Y") && (strlen($arItem["REQUEST_VALUE"]) <= 0)) {
                         $arItem["ERROR"] = "Y";
                         $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_URL");
                         $isSuccess = false;
+//                        if (!preg_match("/^(http|https|ftp):\/\//i", $arItem["REQUEST_VALUE"])) {
+//                            $arItem["ERROR"] = "Y";
+//                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_URL");
+//                            $isSuccess = false;
+//                        }
                     }
                 }
                 elseif($arItem["FIELD_TYPE"] == "email") {
+
                     if($arItem["REQUIRED"] == "Y") {
                         if (!filter_var($arItem["REQUEST_VALUE"], FILTER_VALIDATE_EMAIL)) {
                             $arItem["ERROR"] = "Y";
@@ -223,21 +228,30 @@ if (CModule::IncludeModule("form"))
                         }
                     }
                     elseif(($arItem["REQUIRED"] == "N") && ($arItem["REQUEST_VALUE"] != "")) {
-                        $arItem["ERROR"] = "Y";
-                        $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_EMAIL");
-                        $isSuccess = false;
+                        if (!filter_var($arItem["REQUEST_VALUE"], FILTER_VALIDATE_EMAIL)) {
+                            $arItem["ERROR"] = "Y";
+                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_EMAIL");
+                            $isSuccess = false;
+                        }
                     }
                 }
-                elseif (($arItem["REQUIRED"] == "Y") && ($arItem["REQUEST_VALUE"] == "")) {
+                elseif(($arItem["FIELD_TYPE"] == "multiselect") || ($arItem["FIELD_TYPE"] == "checkbox")) {
+                    if($arItem["REQUIRED"] == "Y") {
+                        if (count($arItem["FIELD_TYPE"]) == 0) {
+                            $arItem["ERROR"] = "Y";
+                            $arItem["ERROR_MESSAGE"] = GetMessage("FORM_ERROR_FIELD_EMAIL");
+                            $isSuccess = false;
+                        }
+                    }
+                }
+                elseif (($arItem["REQUIRED"] == "Y") && (strlen($arItem["REQUEST_VALUE"]) <= 0)) {
                     $arItem["ERROR"] = "Y";
                     $arItem["ERROR_MESSAGE"] =  GetMessage("FORM_ERROR_FIELD_TEXT");
                     $isSuccess = false;
                 }
-
-
             }
 
-            if($arParams["USE_RECAPTCHA"] == "Y") {
+            if($arParams["USE_CAPTCHA"] == "google") {
 
                 $recaptcha = new \ReCaptcha\ReCaptcha(RE_SEC_KEY);
                 $resp = $recaptcha->verify($_REQUEST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
@@ -247,6 +261,24 @@ if (CModule::IncludeModule("form"))
                         $isSuccess = false;
                         $arResult["ERROR_MESSAGE_RECAPTCHA"] = "Не пройдена проверка безопасности";
                     }
+                }
+            }
+            elseif($arParams["USE_CAPTCHA"] == "bitrix") {
+                if($arParams["AJAX"] != "Y") {
+                    $cptcha = new CCaptcha();
+
+                    if (!strlen($_REQUEST["captcha_word"]) > 0) {
+                        $arResult["ERROR_MESSAGE_CAPTCHA"] = "Не введен защитный код";
+                        $isSuccess = false;
+                    } elseif (!$cptcha->CheckCode($_REQUEST["captcha_word"], $_REQUEST["captcha_sid"])) {
+                        $arResult["ERROR_MESSAGE_CAPTCHA"] = "Код с картинки заполнен не правильно";
+                        $isSuccess = false;
+                    }
+                }
+                else {
+                    // проверяется в ajax/reload_captcha.php.
+                    // Так работает валидация на стороне клиента
+                    // такая реализация не хорошая, согласен :)
                 }
             }
 

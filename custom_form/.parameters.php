@@ -42,13 +42,13 @@ $arComponentParameters = array(
             "PARENT" => "FORM_PARAMS",
         ),
 
-        "USE_RECAPTCHA" => array(
-            "NAME" => "Использовать Recaptcha v2",
-            "TYPE" => "CHECKBOX",
-            "DEFAULT" => "N",
+        "USE_CAPTCHA" => array(
+            "NAME" => "CAPTCHA",
+            "TYPE" => "LIST",
+            "VALUES" => array("N" => "Не использовать", "bitrix" => "Стандартная", "google" => "Recaptcha v2"),
+            "DEFAULT" => array("N" => "Не использовать"),
             "PARENT" => "FORM_PARAMS",
         ),
-
 
 		"CACHE_TIME" => array("DEFAULT" => "3600"),
 	),

@@ -1,3 +1,11 @@
+.error_test {
+	color: red;
+}
+
+.input[type="checkbox"], input[type="radio"] {
+	left: 0px !important;
+}
+
 table.form-table
 {
 	width:100%;
