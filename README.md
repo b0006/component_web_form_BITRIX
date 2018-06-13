@@ -1,7 +1,11 @@
 # Компонент Веб-формы БИТРИКС
  Разработал более удобный комопонент для работы с веб-формами
  
- <h4>Для корректной работы необходимо уставноить:</h4>
+ <h2>Установка</h2>
+ <p>1. Разместите компонент (папка custom_form) в папке /local (или bitrix)/components/<--ваше пространство имен-->/</p>
+ <p>2. Разместите reload_captcha.php в папке /ajax/</p>
+ 
+ <h2>Для полноценной работы необходимо уставноить:</h2>
  <ul>
   <li>Recaptcha v2: <a href="https://github.com/google/recaptcha">Recaptcha GitHub</a></li>
   <ul>
@@ -17,4 +21,5 @@
    
   </ul>
   <li>Добавить скрипт масок для полей формы: <a href="https://itchief.ru/lessons/javascript/input-mask-for-html-input-element">MaskedInput JS</a></li>
+  <li>Добавить <a href="http://parsleyjs.org/doc/download.html">Parsley JS</a> для валидации формы </li>
  </ul>
