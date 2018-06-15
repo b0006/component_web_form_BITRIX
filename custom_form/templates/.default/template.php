@@ -47,13 +47,10 @@
                             <?if($arQuestion["REQUIRED"] == "Y"):?>
                                 <span style="color: red;">*</span>
                             <?endif;?>
-<<<<<<< HEAD
-                            
-                            <small id="<?=$arQuestion["ERROR_INPUT_ID"]?>"></small>
-=======
 
+                            <small id="<?=$arQuestion["ERROR_INPUT_ID"]?>"></small>
                             <div id="<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"></div>
->>>>>>> 826ce3bbdf1edb5df9a392a62869e01b3b2b9cc4
+
                             <?if($arQuestion["FIELD_TYPE"] == "text"):?>
 
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
@@ -386,8 +383,8 @@
                 </div>
             <?endif;?>
 
-            <input type="hidden" name="isAjax" value="<?if($arParams["AJAX"] == "Y"):?>Y<?else:?>N<?endif;?>">
-            <input class="btn btn-primary" name="<?=$arResult["SUBMIT_NAME"]?>" type="submit" value="<?=$arResult["arForm"]["BUTTON"]?>">
+            <input type="hidden" name="<?=$arResult["SUBMIT_NAME"]?>">
+            <input class="btn btn-primary" type="submit" value="<?=$arResult["arForm"]["BUTTON"]?>">
         </div>
     </div>
 </form>
@@ -427,7 +424,7 @@
                 else {
                     $("#g-recaptcha-error").text("");
                 }
-            <?elseif(($arParams["USE_CAPTCHA"] == "bitrix") && ($arParams["AJAX"] == "Y")):?>
+            <?elseif(($arParams["USE_CAPTCHA"] == "bitrix")):?>
                 var cap_sid = $('#' + id_form + " input[name=captcha_sid]").attr("value");
                 var cap_word = $('#' + id_form + " input[name=captcha_word]").val();
 

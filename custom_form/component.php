@@ -45,70 +45,31 @@ if (CModule::IncludeModule("form"))
 
             $arItem["ERROR_INPUT_ID"] = "error_" . $arItem["ID"];
 
-            if(($arItem["FIELD_TYPE"] == "text") || ($arItem["FIELD_TYPE"] == "textarea")) {
+            if(
+                ($arItem["FIELD_TYPE"] == "text") ||
+                ($arItem["FIELD_TYPE"] == "textarea") ||
+                ($arItem["FIELD_TYPE"] == "email") ||
+                ($arItem["FIELD_TYPE"] == "date") ||
+                ($arItem["FIELD_TYPE"] == "image") ||
+                ($arItem["FIELD_TYPE"] == "file") ||
+                ($arItem["FIELD_TYPE"] == "url") ||
+                ($arItem["FIELD_TYPE"] == "password")
+            ) {
                 foreach ($arItem["ANSWERS"] as &$answer){
                     $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
-            elseif($arItem["FIELD_TYPE"] == "radio") {
+            elseif(($arItem["FIELD_TYPE"] == "radio") || ($arItem["FIELD_TYPE"] == "dropdown")) {
                 foreach ($arItem["ANSWERS"] as &$answer){
                     $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"];
                 }
             }
-            elseif($arItem["FIELD_TYPE"] == "checkbox") {
+            elseif(($arItem["FIELD_TYPE"] == "checkbox") || ($arItem["FIELD_TYPE"] == "multiselect")) {
                 foreach ($arItem["ANSWERS"] as &$answer){
                     $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"] . "[]";
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "dropdown") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"];
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "email") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "multiselect") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"] . "[]";
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "date") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "image") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "file") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "url") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                }
-            }
-            elseif($arItem["FIELD_TYPE"] == "password") {
-                foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
         }
@@ -226,22 +187,9 @@ if (CModule::IncludeModule("form"))
                 }
             }
             elseif($arParams["USE_CAPTCHA"] == "bitrix") {
-                if($arParams["AJAX"] != "Y") {
-                    $cptcha = new CCaptcha();
-
-                    if (!strlen($_REQUEST["captcha_word"]) > 0) {
-                        $arResult["ERROR_MESSAGE_CAPTCHA"] = "Не введен защитный код";
-                        $isSuccess = false;
-                    } elseif (!$cptcha->CheckCode($_REQUEST["captcha_word"], $_REQUEST["captcha_sid"])) {
-                        $arResult["ERROR_MESSAGE_CAPTCHA"] = "Код с картинки заполнен не правильно";
-                        $isSuccess = false;
-                    }
-                }
-                else {
-                    // проверяется в ajax/reload_captcha.php.
-                    // Так работает валидация на стороне клиента
-                    // такая реализация не хорошая, согласен :)
-                }
+                // проверяется в ajax/reload_captcha.php.
+                // Так работает валидация на стороне клиента.
+                // Такая реализация не хорошая, согласен :)
             }
 
             if($isSuccess) {
