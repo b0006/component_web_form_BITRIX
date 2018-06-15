@@ -3,8 +3,6 @@
 
 <h3><?=$arResult["arForm"]["NAME"]?></h3>
 <form data-parsley-validate="" id="<?=$arResult["arForm"]["SID"]?>" name="<?=$arResult["arForm"]["SID"]?>" action="<?=POST_FORM_ACTION_URI?>" method="POST" enctype="multipart/form-data">
-    <input name="sessid" id="sessid" value="<?=$_SESSION["fixed_session_id"]?>" type="hidden">
-
     <div class="row">
         <div class="col-md-6">
 
@@ -44,69 +42,80 @@
                                 <div class="clearfix"></div>
                             <?endif;?>
 
-                            <small id="error_<?=$arQuestion["ID"]?>" style="color: #FF0000;"></small>
-                            <div class="clearfix"></div>
-
                             <label for="<?=$input_id?>"><?=$arQuestion["TITLE"]?></label>
 
                             <?if($arQuestion["REQUIRED"] == "Y"):?>
                                 <span style="color: red;">*</span>
                             <?endif;?>
+<<<<<<< HEAD
+                            
+                            <small id="<?=$arQuestion["ERROR_INPUT_ID"]?>"></small>
+=======
 
                             <div id="<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"></div>
+>>>>>>> 826ce3bbdf1edb5df9a392a62869e01b3b2b9cc4
                             <?if($arQuestion["FIELD_TYPE"] == "text"):?>
 
-                                <input type="text"
-                                       class="form-control"
-                                       id="text_<?=$arQuestion["ID"]?>"
-                                       name="<?=$arQuestion["INPUT_NAME"]?>"
-                                       value="<?=$arQuestion["REQUEST_VALUE"]?>"
-                                       data-parsley-trigger="blur"
-                                       data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
-                                       <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                       <?if(isset($comments["error_message"])):?>
-                                           data-parsley-required-message="<?=$comments["error_message"]?>"
-                                       <?else:?>
-                                           data-parsley-required-message="Заполните поле"
-                                       <?endif;?>
-                                       <?if(isset($comments["min_length"])):?>data-parsley-minlength="<?=$comments["min_length"]?>"<?endif;?>
-                                       <?if(isset($comments["max_length"])):?>data-parsley-maxlength="<?=$comments["max_length"]?>"<?endif;?>
-                                >
+                                <?foreach ($arQuestion["ANSWERS"] as $answer):?>
 
-                                <?if($comments["type"] == "phone"):?>
-                                    <script>
-                                        //$('#text_<?//=$arQuestion["ID"]?>').inputmask("+8(999) 999 9999");
-                                        $('#text_<?=$arQuestion["ID"]?>').mask("+7(999) 999 9999");
-                                    </script>
-                                <?endif;?>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="<?=$answer["INPUT_ID"]?>"
+                                           name="<?=$answer["INPUT_NAME"]?>"
+                                           value="<?=$arQuestion["REQUEST_VALUE"]?>"
+                                           data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
+                                           <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
+                                           <?if(isset($comments["error_message"])):?>
+                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?else:?>
+                                               data-parsley-required-message="Заполните поле"
+                                           <?endif;?>
+                                           <?if(isset($comments["min_message"])):?>data-parsley-minlength-message="<?=$comments["min_message"]?>"<?endif;?>
+                                           <?if(isset($comments["max_message"])):?>data-parsley-maxlength-message="<?=$comments["max_message"]?>"<?endif;?>
+                                           <?if(isset($comments["min_length"])):?>data-parsley-minlength="<?=$comments["min_length"]?>"<?endif;?>
+                                           <?if(isset($comments["max_length"])):?>data-parsley-maxlength="<?=$comments["max_length"]?>"<?endif;?>
+                                    >
+
+                                    <?if($comments["type"] == "phone"):?>
+                                        <script>
+                                            //$('#<?//=$answer["INPUT_ID"]?>').inputmask("+8(999) 999 9999");
+                                            $('#<?=$answer["INPUT_ID"]?>').mask("+7(999) 999 9999");
+                                        </script>
+                                    <?endif;?>
+
+                                <?endforeach;?>
+
 
                             <?elseif($arQuestion["FIELD_TYPE"] == "textarea"):?>
 
-                                <textarea class="form-control"
-                                          id="textarea_<?=$arQuestion["ID"]?>"
-                                          name="<?=$arQuestion["INPUT_NAME"]?>"
-                                          <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                          data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
-                                          <?if(isset($comments["error_message"])):?>
-                                              data-parsley-required-message="<?=$comments["error_message"]?>"
-                                          <?else:?>
-                                              data-parsley-required-message="Напишите сообщение"
-                                          <?endif;?>
-                                          <?if(isset($comments["min_length"])):?>data-parsley-minlength="<?=$comments["min_length"]?>"<?endif;?>
-                                          <?if(isset($comments["max_length"])):?>data-parsley-maxlength="<?=$comments["max_length"]?>"<?endif;?>
-                                ><?=$arQuestion["REQUEST_VALUE"]?></textarea>
+                                <?foreach ($arQuestion["ANSWERS"] as $answer):?>
+                                    <textarea class="form-control"
+                                              id="<?=$answer["INPUT_ID"]?>"
+                                              name="<?=$answer["INPUT_NAME"]?>"
+                                              <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
+                                              data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
+                                              <?if(isset($comments["error_message"])):?>
+                                                  data-parsley-required-message="<?=$comments["error_message"]?>"
+                                              <?else:?>
+                                                  data-parsley-required-message="Напишите сообщение"
+                                              <?endif;?>
+                                              <?if(isset($comments["min_message"])):?>data-parsley-minlength-message="<?=$comments["min_message"]?>"<?endif;?>
+                                              <?if(isset($comments["max_message"])):?>data-parsley-maxlength-message="<?=$comments["max_message"]?>"<?endif;?>
+                                              <?if(isset($comments["min_length"])):?>data-parsley-minlength="<?=$comments["min_length"]?>"<?endif;?>
+                                              <?if(isset($comments["max_length"])):?>data-parsley-maxlength="<?=$comments["max_length"]?>"<?endif;?>
+                                    ><?=$arQuestion["REQUEST_VALUE"]?></textarea>
+                                <?endforeach;?>
 
                             <?elseif($arQuestion["FIELD_TYPE"] == "radio"):?>
 
-                                <?$iter = 0;?>
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <div class="form-check">
                                         <input class="form-check-input"
                                                type="radio"
-                                               name="<?=$arQuestion["INPUT_NAME"]?>"
-                                               id="radio_<?=$answer["ID"]?>"
+                                               id="<?=$answer["INPUT_ID"]?>"
+                                               name="<?=$answer["INPUT_NAME"]?>"
                                                value="<?=$answer["ID"]?>"
-                                               data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
+                                               data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                                <?if($arQuestion["REQUEST_VALUE"] == $answer["ID"]):?>checked<?endif;?>
                                                <?if(isset($comments["error_message"])):?>
@@ -115,11 +124,12 @@
                                                    data-parsley-required-message="Выберите вариант ответа"
                                                <?endif;?>
                                         >
-                                        <label class="form-check-label" for="radio_<?=$answer["ID"]?>">
+                                        <label class="form-check-label" for="<?=$answer["INPUT_ID"]?>">
                                             <?=$answer["MESSAGE"]?>
                                         </label>
                                     </div>
                                 <?endforeach;?>
+
 
                             <?elseif($arQuestion["FIELD_TYPE"] == "checkbox"):?>
 
@@ -128,13 +138,16 @@
                                         <input class="form-check-input"
                                                type="checkbox"
                                                value="<?=$answer["ID"]?>"
-                                               name="<?=$arQuestion["INPUT_NAME"]?>"
-                                               id="checkbox_<?=$answer["ID"]?>"
-                                               data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
+                                               name="<?=$answer["INPUT_NAME"]?>"
+                                               id="<?=$answer["INPUT_ID"]?>"
+                                               data-parsley-trigger="click"
+                                               data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                <?foreach ($arQuestion["REQUEST_VALUE"] as $req):?>
                                                <?if($req == $answer["ID"]):?>checked<?endif;?>
                                                <?endforeach;?>
                                                <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
+                                               <?if(isset($comments["min_message"])):?>data-parsley-mincheck-message="<?=$comments["min_message"]?>"<?endif;?>
+                                               <?if(isset($comments["max_message"])):?>data-parsley-maxcheck-message="<?=$comments["max_message"]?>"<?endif;?>
                                                <?if(isset($comments["mincheck"])):?>data-parsley-mincheck="<?=$comments["mincheck"]?>"<?endif;?>
                                                <?if(isset($comments["maxcheck"])):?>data-parsley-maxcheck="<?=$comments["maxcheck"]?>"<?endif;?>
                                                <?if(isset($comments["error_message"])):?>
@@ -143,30 +156,34 @@
                                                    data-parsley-required-message="Выберите вариант(ы) ответа(ов)"
                                                <?endif;?>
                                         >
-                                        <label class="form-check-label" for="checkbox_<?=$answer["ID"]?>">
+                                        <label class="form-check-label" for="<?=$answer["INPUT_ID"]?>">
                                             <?=$answer["MESSAGE"]?>
                                         </label>
                                     </div>
                                 <?endforeach;?>
 
                             <?elseif($arQuestion["FIELD_TYPE"] == "dropdown"):?>
+                                    <?foreach ($arQuestion["ANSWERS"] as $a_pid => $answer):?>
 
-                                <select class="form-control"
-                                        id="dropdown_<?=$arQuestion["ID"]?>"
-                                        name="<?=$arQuestion["INPUT_NAME"]?>"
-                                        data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
-                                        <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                        <?if(isset($comments["error_message"])):?>
-                                            data-parsley-required-message="<?=$comments["error_message"]?>"
-                                        <?else:?>
-                                            data-parsley-required-message="Выберите"
+                                        <?if($a_pid == 0):?>
+                                            <select class="form-control"
+                                                    id="<?=$answer["INPUT_ID"]?>"
+                                                    name="<?=$answer["INPUT_NAME"]?>"
+                                                    data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
+                                                    <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
+                                                    <?if(isset($comments["error_message"])):?>
+                                                        data-parsley-required-message="<?=$comments["error_message"]?>"
+                                                    <?else:?>
+                                                        data-parsley-required-message="Выберите"
+                                                    <?endif;?>
+                                            >
+                                            <option label="Выберите вариант ответа"></option>
                                         <?endif;?>
-                                >
-                                    <option></option>
-                                    <?foreach ($arQuestion["ANSWERS"] as $answer):?>
+
                                         <option value="<?=$answer["ID"]?>" <?if($arQuestion["REQUEST_VALUE"] == $answer["ID"]):?>selected<?endif;?>>
                                             <?=$answer["MESSAGE"]?>
                                         </option>
+
                                     <?endforeach;?>
                                 </select>
 
@@ -174,34 +191,41 @@
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <input type="email"
                                            class="form-control"
-                                           id="email_<?=$arQuestion["ID"]?>"
-                                           name="<?=$arQuestion["INPUT_NAME"]?>"
+                                           id="<?=$answer["INPUT_ID"]?>"
+                                           name="<?=$answer["INPUT_NAME"]?>"
                                            value="<?=$arQuestion["REQUEST_VALUE"]?>"
-                                           data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
+                                           data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                            data-parsley-trigger="change"
+                                           data-parsley-type-message="Неккоректный email"
                                            <?if(isset($comments["error_message"])):?>
                                                data-parsley-required-message="<?=$comments["error_message"]?>"
-                                           <?else:?>
-                                               data-parsley-required-message="Введите email"
-                                               data-parsley-type-message="Неккоректный email"
                                            <?endif;?>
                                     >
                                 <?endforeach;?>
                             <?elseif($arQuestion["FIELD_TYPE"] == "multiselect"):?>
-                                <select multiple=""
-                                        class="form-control"
-                                        id="multiselect_<?=$arQuestion["ID"]?>"
-                                        name="<?=$arQuestion["INPUT_NAME"]?>"
-                                        data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
-                                        <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                        <?if(isset($comments["error_message"])):?>
-                                            data-parsley-required-message="<?=$comments["error_message"]?>"
-                                        <?else:?>
-                                            data-parsley-required-message="Выберите"
+                                    <?foreach ($arQuestion["ANSWERS"] as $a_pid => $answer):?>
+
+                                        <?if($a_pid == 0):?>
+                                            <select multiple=""
+                                                    class="form-control"
+                                                    id="<?=$answer["INPUT_ID"]?>"
+                                                    name="<?=$answer["INPUT_NAME"]?>"
+                                                    data-parsley-trigger="click"
+                                                    data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
+                                                    <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
+                                                    <?if(isset($comments["min_message"])):?>data-parsley-mincheck-message="<?=$comments["min_message"]?>"<?endif;?>
+                                                    <?if(isset($comments["max_message"])):?>data-parsley-maxcheck-message="<?=$comments["max_message"]?>"<?endif;?>
+                                                    <?if(isset($comments["mincheck"])):?>data-parsley-mincheck="<?=$comments["mincheck"]?>"<?endif;?>
+                                                    <?if(isset($comments["maxcheck"])):?>data-parsley-maxcheck="<?=$comments["maxcheck"]?>"<?endif;?>
+                                                    <?if(isset($comments["error_message"])):?>
+                                                        data-parsley-required-message="<?=$comments["error_message"]?>"
+                                                    <?else:?>
+                                                        data-parsley-required-message="Выберите"
+                                                    <?endif;?>
+                                            >
                                         <?endif;?>
-                                >
-                                    <?foreach ($arQuestion["ANSWERS"] as $answer):?>
+
                                         <option value="<?=$answer["ID"]?>"
                                             <?foreach ($arQuestion["REQUEST_VALUE"] as $req):?>
                                                 <?if($req == $answer["ID"]):?>selected<?endif;?>
@@ -215,15 +239,22 @@
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <img src="/bitrix/js/main/core/images/calendar-icon.gif" alt="Выбрать дату в календаре" class="calendar-icon" onclick="BX.calendar({node:this, field:'date_<?=$arQuestion["ID"]?>', form: '<?=$arResult["arForm"]["SID"]?>', bTime: false, currentTime: '<?echo time();?>', bHideTime: false});" onmouseover="BX.addClass(this, 'calendar-icon-hover');" onmouseout="BX.removeClass(this, 'calendar-icon-hover');" border="0">
+                                            <img src="/bitrix/js/main/core/images/calendar-icon.gif"
+                                                 alt="Выбрать дату в календаре"
+                                                 class="calendar-icon"
+                                                 onclick="BX.calendar({node:this, field:'<?=$answer["INPUT_ID"]?>', form: '<?=$arResult["arForm"]["SID"]?>', bTime: false, currentTime: '<?echo time();?>', bHideTime: false});"
+                                                 onmouseover="BX.addClass(this, 'calendar-icon-hover');"
+                                                 onmouseout="BX.removeClass(this, 'calendar-icon-hover');"
+                                                 border="0"
+                                            >
                                         </div>
                                         <div class="col-md-10">
                                             <input type="text"
                                                    class="form-control"
-                                                   id="date_<?=$arQuestion["ID"]?>"
-                                                   name="<?=$arQuestion["INPUT_NAME"]?>"
+                                                   id="<?=$answer["INPUT_ID"]?>"
+                                                   name="<?=$answer["INPUT_NAME"]?>"
                                                    value="<?=$arQuestion["REQUEST_VALUE"]?>"
-                                                   data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
+                                                   data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                    <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                                    <?if(isset($comments["error_message"])):?>
                                                        data-parsley-required-message="<?=$comments["error_message"]?>"
@@ -235,7 +266,7 @@
                                     </div>
 
                                     <script>
-                                        $('#date_<?=$arQuestion["ID"]?>').mask("99.99.9999");
+                                        $('#<?=$answer["INPUT_ID"]?>').mask("99.99.9999");
                                     </script>
 
                                     <?endforeach;?>
@@ -243,9 +274,9 @@
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <input type="file"
                                            class="form-control-file"
-                                           id="image_<?=$arQuestion["ID"]?>"
-                                           name="<?=$arQuestion["INPUT_NAME"]?>"
-                                           data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
+                                           id="<?=$answer["INPUT_ID"]?>"
+                                           name="<?=$answer["INPUT_NAME"]?>"
+                                           data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                            <?if(isset($comments["error_message"])):?>
                                                data-parsley-required-message="<?=$comments["error_message"]?>"
@@ -258,9 +289,9 @@
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <input type="file"
                                            class="form-control-file"
-                                           id="file_<?=$arQuestion["ID"]?>"
-                                           name="<?=$arQuestion["INPUT_NAME"]?>"
-                                           data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
+                                           id="<?=$answer["INPUT_ID"]?>"
+                                           name="<?=$answer["INPUT_NAME"]?>"
+                                           data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                            <?if(isset($comments["error_message"])):?>
                                                data-parsley-required-message="<?=$comments["error_message"]?>"
@@ -273,10 +304,10 @@
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <input type="text"
                                            class="form-control"
-                                           id="url_<?=$arQuestion["ID"]?>"
-                                           name="<?=$arQuestion["INPUT_NAME"]?>"
+                                           id="<?=$answer["INPUT_ID"]?>"
+                                           name="<?=$answer["INPUT_NAME"]?>"
+                                           data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            value="<?=$arQuestion["REQUEST_VALUE"]?>"
-                                           data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                            data-parsley-type="url"
                                            <?if(isset($comments["error_message"])):?>
@@ -290,11 +321,15 @@
                                 <?foreach ($arQuestion["ANSWERS"] as $answer):?>
                                     <input type="password"
                                            class="form-control"
-                                           id="url_<?=$arQuestion["ID"]?>"
-                                           name="<?=$arQuestion["INPUT_NAME"]?>"
+                                           id="<?=$answer["INPUT_ID"]?>"
+                                           name="<?=$answer["INPUT_NAME"]?>"
+                                           data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            value="<?=$arQuestion["REQUEST_VALUE"]?>"
-                                           data-parsley-errors-container="#<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
+                                           <?if(isset($comments["min_message"])):?>data-parsley-mincheck-message="<?=$comments["min_message"]?>"<?endif;?>
+                                           <?if(isset($comments["max_message"])):?>data-parsley-maxcheck-message="<?=$comments["max_message"]?>"<?endif;?>
+                                           <?if(isset($comments["mincheck"])):?>data-parsley-mincheck="<?=$comments["mincheck"]?>"<?endif;?>
+                                           <?if(isset($comments["maxcheck"])):?>data-parsley-maxcheck="<?=$comments["maxcheck"]?>"<?endif;?>
                                            <?if(isset($comments["error_message"])):?>
                                                data-parsley-required-message="<?=$comments["error_message"]?>"
                                            <?else:?>
@@ -306,21 +341,6 @@
                         </div>
                     </div>
                 </div>
-                <?else:?>
-                    <?if($arQuestion["REQUIRED"] == "Y"):?>
-
-                    <?endif;?>
-
-<!--                    --><?//if($arQuestion["FIELD_TYPE"] == "text"):?>
-<!--                        <input type="hidden" id="hidden_text_--><?//=$arQuestion["ID"]?><!--" name="--><?//=$arQuestion["INPUT_NAME"]?><!--" value="hidden_text">-->
-<!--                    --><?//endif;?>
-<!--                    --><?//if($arQuestion["FIELD_TYPE"] == "integer"):?>
-<!--                        <input type="hidden" id="hidden_integer_--><?//=$arQuestion["ID"]?><!--" name="--><?//=$arQuestion["INPUT_NAME"]?><!--" value="hidden_integer">-->
-<!--                    --><?//endif;?>
-<!--                    --><?//if($arQuestion["FIELD_TYPE"] == "date"):?>
-<!--                        <input type="hidden" id="hidden_date_--><?//=$arQuestion["ID"]?><!--" name="--><?//=$arQuestion["INPUT_NAME"]?><!--" value="02.02.2018">-->
-<!--                    --><?//endif;?>
-
                 <?endif;?>
             <?endforeach;?>
 

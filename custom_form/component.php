@@ -26,7 +26,6 @@ if (CModule::IncludeModule("form"))
 
             $arResult["QUESTIONS"][$arQuestion["ID"]] = $arQuestion;
 
-
             // получим список всех ответов
             $rsAnswers = CFormAnswer::GetList(
                 $arQuestion["ID"],
@@ -44,119 +43,77 @@ if (CModule::IncludeModule("form"))
 
         foreach ($arResult["QUESTIONS"] as &$arItem){
 
+            $arItem["ERROR_INPUT_ID"] = "error_" . $arItem["ID"];
+
             if(($arItem["FIELD_TYPE"] == "text") || ($arItem["FIELD_TYPE"] == "textarea")) {
-//                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-                    $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
-
             }
             elseif($arItem["FIELD_TYPE"] == "radio") {
-                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["VARNAME"];
-
                 foreach ($arItem["ANSWERS"] as &$answer){
                     $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"];
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "checkbox") {
-                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["VARNAME"] . "[]";
-
                 foreach ($arItem["ANSWERS"] as &$answer){
                     $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"] . "[]";
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "dropdown") {
-                $arItem["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["VARNAME"];
-
-                $arItem["HTML_CODE"] = "<select id='" .$arItem["INPUT_ID"]. "' name='" . $arItem["INPUT_NAME"] ."'>";
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $arItem["HTML_CODE"] .= "<option value='" . $answer["ID"] ."'>". $answer["MESSAGE"] ."</option>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"];
                 }
-                $arItem["HTML_CODE"] .= "</select>";
             }
             elseif($arItem["FIELD_TYPE"] == "email") {
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $arItem["ID"];
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                     $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-                    $answer["HTML_CODE"] = "<input type='" . $answer["FIELD_TYPE"] . "' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
-
-                    $arItem["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "multiselect") {
-                $arItem["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-                $arItem["INPUT_NAME"] = "form_" . $arItem["FIELD_TYPE"] . "_" . $arItem["VARNAME"] . "[]";
-
-                $arItem["HTML_CODE"] = "<select multiple=\"\" id='" .$arItem["INPUT_ID"]. "' name='" . $arItem["INPUT_NAME"] ."'>";
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $arItem["HTML_CODE"] .= "<option value='" . $answer["ID"] ."'>". $answer["MESSAGE"] ."</option>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $arItem["VARNAME"] . "[]";
                 }
-                $arItem["HTML_CODE"] .= "</select>";
             }
             elseif($arItem["FIELD_TYPE"] == "date") {
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-
-                    $arItem["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "image") {
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-
-                    $arItem["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-
-                    $answer["HTML_CODE"] = "<input type='file' id='" .$answer["INPUT_ID"]. "' name='" . $answer["INPUT_NAME"] ."'>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "file") {
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-
-                    $arItem["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='"  .$answer["INPUT_ID"] . "' name='" . $answer["INPUT_NAME"] ."'>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "url") {
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-
-                    $arItem["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='"  .$answer["INPUT_ID"] . "' name='" . $answer["INPUT_NAME"] ."'>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
             elseif($arItem["FIELD_TYPE"] == "password") {
-
                 foreach ($arItem["ANSWERS"] as &$answer){
-                    $answer["INPUT_ID"] = $arItem["FIELD_TYPE"] . "_" . $arItem["ID"];
-
-                    $arItem["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
-
-                    $answer["HTML_CODE"] = "<input type='" . $arItem["FIELD_TYPE"] . "' id='"  .$answer["INPUT_ID"] . "' name='" . $answer["INPUT_NAME"] ."'>";
+                    $answer["INPUT_ID"] = $answer["FIELD_TYPE"] . "_" . $answer["ID"];
+                    $answer["INPUT_NAME"] = "form_" . $answer["FIELD_TYPE"] . "_" . $answer["ID"];
                 }
             }
         }
 
-        $arResult["SUBMIT_NAME"] = "submit";
+        $arResult["SUBMIT_NAME"] = "submit_" . $arResult["arForm"]["SID"];
 
         if($arParams["USE_CAPTCHA"] == "bitrix") {
             include_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/classes/general/captcha.php");
@@ -164,14 +121,19 @@ if (CModule::IncludeModule("form"))
             $arResult["CAPTCHA_CODE"] = $code;
         }
 
-        if( (isset($_REQUEST[$arResult["SUBMIT_NAME"]])) || ($_REQUEST["isAjax"] == "Y")){
+        if(isset($_REQUEST[$arResult["SUBMIT_NAME"]])){
 
             $arRequest = $_REQUEST;
             $arRequest = array_merge($_REQUEST, $_FILES);
 
             foreach ($arRequest as $req_pid => $request) {
                 foreach ($arResult["QUESTIONS"] as &$arItem) {
-                   $input_name = str_replace("[]", "", $arItem["INPUT_NAME"]);
+                    $input_name = "";
+
+                    foreach ($arItem["ANSWERS"] as &$answer){
+                        $input_name = str_replace("[]", "", $answer["INPUT_NAME"]);
+                    }
+
                     if ($input_name == $req_pid) {
                         $arItem["REQUEST_VALUE"] = $request;
                     }
