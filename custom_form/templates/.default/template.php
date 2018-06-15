@@ -1,10 +1,6 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 ?>
 
-<script>
-    var form_fields = [];
-</script>
-
 <h3><?=$arResult["arForm"]["NAME"]?></h3>
 <form data-parsley-validate="" id="<?=$arResult["arForm"]["SID"]?>" name="<?=$arResult["arForm"]["SID"]?>" action="<?=POST_FORM_ACTION_URI?>" method="POST" enctype="multipart/form-data">
     <input name="sessid" id="sessid" value="<?=$_SESSION["fixed_session_id"]?>" type="hidden">
@@ -57,16 +53,6 @@
                                 <span style="color: red;">*</span>
                             <?endif;?>
 
-                            <script>
-                                form_fields.push({
-                                    error_field_id : 'error_<?=$arQuestion["ID"]?>',
-                                    field_name : '<?=$arQuestion["INPUT_NAME"]?>',
-                                    type : '<?=$arQuestion["FIELD_TYPE"]?>',
-                                    <?foreach ($comments as $c_pid => $comment):?>
-                                        <?=$c_pid?> : '<?=$comment?>',
-                                    <?endforeach;?>
-                                });
-                            </script>
                             <div id="<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"></div>
                             <?if($arQuestion["FIELD_TYPE"] == "text"):?>
 
