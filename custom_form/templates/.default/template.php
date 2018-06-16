@@ -30,8 +30,6 @@
                 }
                 ?>
 
-                <?$input_id = $arQuestion["FIELD_TYPE"] . "_" . $arQuestion["ID"];?>
-
                 <?if($arQuestion["ADDITIONAL"] != "Y"):?>
                 <div class="row">
                     <div class="col-md-12">
@@ -42,13 +40,13 @@
                                 <div class="clearfix"></div>
                             <?endif;?>
 
-                            <label for="<?=$input_id?>"><?=$arQuestion["TITLE"]?></label>
+                            <label><?=$arQuestion["TITLE"]?></label>
 
                             <?if($arQuestion["REQUIRED"] == "Y"):?>
                                 <span style="color: red;">*</span>
                             <?endif;?>
 
-                            <small id="<?=$arQuestion["ERROR_INPUT_ID"]?>"></small>
+                            <small class="error_message" id="<?=$arQuestion["ERROR_INPUT_ID"]?>"></small>
                             <div id="<?=$arQuestion["FIELD_TYPE"]?>_errors_<?=$arQuestion["ID"]?>"></div>
 
                             <?if($arQuestion["FIELD_TYPE"] == "text"):?>

@@ -188,8 +188,6 @@ if (CModule::IncludeModule("form"))
             }
             elseif($arParams["USE_CAPTCHA"] == "bitrix") {
                 // проверяется в ajax/reload_captcha.php.
-                // Так работает валидация на стороне клиента.
-                // Такая реализация не хорошая, согласен :)
             }
 
             if($isSuccess) {

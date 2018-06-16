@@ -36,7 +36,7 @@ $arComponentParameters = array(
 		),
 
         "AJAX" => array(
-            "NAME" => "Использовать AJAX",
+            "NAME" => GetMessage("COMP_FORM_PARAMS_IS_AJAX"),
             "TYPE" => "CHECKBOX",
             "DEFAULT" => "Y",
             "PARENT" => "FORM_PARAMS",
@@ -45,8 +45,8 @@ $arComponentParameters = array(
         "USE_CAPTCHA" => array(
             "NAME" => "CAPTCHA",
             "TYPE" => "LIST",
-            "VALUES" => array("N" => "Не использовать", "bitrix" => "Стандартная", "google" => "Recaptcha v2"),
-            "DEFAULT" => array("N" => "Не использовать"),
+            "VALUES" => array("N" => GetMessage("COMP_FORM_PARAMS_NOT_USE"), "bitrix" => "Bitrix", "google" => "Recaptcha v2"),
+            "DEFAULT" => array("N" => GetMessage("COMP_FORM_PARAMS_NOT_USE")),
             "PARENT" => "FORM_PARAMS",
         ),
 
