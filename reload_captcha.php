@@ -1,6 +1,7 @@
 <?php
 require($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/prolog_before.php');
 
+// проверка и обновление капчи
 if((isset($_REQUEST["cap_sid"])) && (isset($_REQUEST["cap_word"]))) {
 
     include_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/classes/general/captcha.php");
