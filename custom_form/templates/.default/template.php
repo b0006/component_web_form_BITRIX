@@ -11,25 +11,7 @@
             <?endif;?>
 
             <?foreach ($arResult["QUESTIONS"] as $arQuestion):?>
-
-                <?
-                $comments = "";
-                if(strlen($arQuestion["COMMENTS"]) > 0) {
-                    try {
-                        $comments = (array)json_decode($arQuestion["COMMENTS"]);
-                        if(json_last_error_msg() != "No error"){
-                            ?>
-                            <script>
-                                console.log('<?=json_last_error_msg()?>');
-                                console.log('ID question: <?=json_decode($arQuestion["ID"])?>');
-                            </script>
-                            <?
-                        }
-                    }
-                    catch (Exception $e){}
-                }
-                ?>
-
+            
                 <?if($arQuestion["ADDITIONAL"] != "Y"):?>
                 <div class="row">
                     <div class="col-md-12">
@@ -60,18 +42,18 @@
                                            value="<?=$arQuestion["REQUEST_VALUE"]?>"
                                            data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                           <?if(isset($comments["error_message"])):?>
-                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                               data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                            <?else:?>
                                                data-parsley-required-message="Заполните поле"
                                            <?endif;?>
-                                           <?if(isset($comments["min_message"])):?>data-parsley-minlength-message="<?=$comments["min_message"]?>"<?endif;?>
-                                           <?if(isset($comments["max_message"])):?>data-parsley-maxlength-message="<?=$comments["max_message"]?>"<?endif;?>
-                                           <?if(isset($comments["min_length"])):?>data-parsley-minlength="<?=$comments["min_length"]?>"<?endif;?>
-                                           <?if(isset($comments["max_length"])):?>data-parsley-maxlength="<?=$comments["max_length"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["min_message"])):?>data-parsley-minlength-message="<?=$arQuestion["COMMENTS"]["min_message"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["max_message"])):?>data-parsley-maxlength-message="<?=$arQuestion["COMMENTS"]["max_message"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["min_length"])):?>data-parsley-minlength="<?=$arQuestion["COMMENTS"]["min_length"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["max_length"])):?>data-parsley-maxlength="<?=$arQuestion["COMMENTS"]["max_length"]?>"<?endif;?>
                                     >
 
-                                    <?if($comments["type"] == "phone"):?>
+                                    <?if($arQuestion["COMMENTS"]["type"] == "phone"):?>
                                         <script>
                                             //$('#<?//=$answer["INPUT_ID"]?>').inputmask("+8(999) 999 9999");
                                             $('#<?=$answer["INPUT_ID"]?>').mask("+7(999) 999 9999");
@@ -89,15 +71,15 @@
                                               name="<?=$answer["INPUT_NAME"]?>"
                                               <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                               data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
-                                              <?if(isset($comments["error_message"])):?>
-                                                  data-parsley-required-message="<?=$comments["error_message"]?>"
+                                              <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                                  data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                               <?else:?>
                                                   data-parsley-required-message="Напишите сообщение"
                                               <?endif;?>
-                                              <?if(isset($comments["min_message"])):?>data-parsley-minlength-message="<?=$comments["min_message"]?>"<?endif;?>
-                                              <?if(isset($comments["max_message"])):?>data-parsley-maxlength-message="<?=$comments["max_message"]?>"<?endif;?>
-                                              <?if(isset($comments["min_length"])):?>data-parsley-minlength="<?=$comments["min_length"]?>"<?endif;?>
-                                              <?if(isset($comments["max_length"])):?>data-parsley-maxlength="<?=$comments["max_length"]?>"<?endif;?>
+                                              <?if(isset($arQuestion["COMMENTS"]["min_message"])):?>data-parsley-minlength-message="<?=$arQuestion["COMMENTS"]["min_message"]?>"<?endif;?>
+                                              <?if(isset($arQuestion["COMMENTS"]["max_message"])):?>data-parsley-maxlength-message="<?=$arQuestion["COMMENTS"]["max_message"]?>"<?endif;?>
+                                              <?if(isset($arQuestion["COMMENTS"]["min_length"])):?>data-parsley-minlength="<?=$arQuestion["COMMENTS"]["min_length"]?>"<?endif;?>
+                                              <?if(isset($arQuestion["COMMENTS"]["max_length"])):?>data-parsley-maxlength="<?=$arQuestion["COMMENTS"]["max_length"]?>"<?endif;?>
                                     ><?=$arQuestion["REQUEST_VALUE"]?></textarea>
                                 <?endforeach;?>
 
@@ -113,8 +95,8 @@
                                                data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                                <?if($arQuestion["REQUEST_VALUE"] == $answer["ID"]):?>checked<?endif;?>
-                                               <?if(isset($comments["error_message"])):?>
-                                                   data-parsley-required-message="<?=$comments["error_message"]?>"
+                                               <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                                   data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                                <?else:?>
                                                    data-parsley-required-message="Выберите вариант ответа"
                                                <?endif;?>
@@ -141,12 +123,12 @@
                                                <?if($req == $answer["ID"]):?>checked<?endif;?>
                                                <?endforeach;?>
                                                <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                               <?if(isset($comments["min_message"])):?>data-parsley-mincheck-message="<?=$comments["min_message"]?>"<?endif;?>
-                                               <?if(isset($comments["max_message"])):?>data-parsley-maxcheck-message="<?=$comments["max_message"]?>"<?endif;?>
-                                               <?if(isset($comments["mincheck"])):?>data-parsley-mincheck="<?=$comments["mincheck"]?>"<?endif;?>
-                                               <?if(isset($comments["maxcheck"])):?>data-parsley-maxcheck="<?=$comments["maxcheck"]?>"<?endif;?>
-                                               <?if(isset($comments["error_message"])):?>
-                                                   data-parsley-required-message="<?=$comments["error_message"]?>"
+                                               <?if(isset($arQuestion["COMMENTS"]["min_message"])):?>data-parsley-mincheck-message="<?=$arQuestion["COMMENTS"]["min_message"]?>"<?endif;?>
+                                               <?if(isset($arQuestion["COMMENTS"]["max_message"])):?>data-parsley-maxcheck-message="<?=$arQuestion["COMMENTS"]["max_message"]?>"<?endif;?>
+                                               <?if(isset($arQuestion["COMMENTS"]["mincheck"])):?>data-parsley-mincheck="<?=$arQuestion["COMMENTS"]["mincheck"]?>"<?endif;?>
+                                               <?if(isset($arQuestion["COMMENTS"]["maxcheck"])):?>data-parsley-maxcheck="<?=$arQuestion["COMMENTS"]["maxcheck"]?>"<?endif;?>
+                                               <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                                   data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                                <?else:?>
                                                    data-parsley-required-message="Выберите вариант(ы) ответа(ов)"
                                                <?endif;?>
@@ -166,8 +148,8 @@
                                                     name="<?=$answer["INPUT_NAME"]?>"
                                                     data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                     <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                                    <?if(isset($comments["error_message"])):?>
-                                                        data-parsley-required-message="<?=$comments["error_message"]?>"
+                                                    <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                                        data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                                     <?else:?>
                                                         data-parsley-required-message="Выберите"
                                                     <?endif;?>
@@ -193,8 +175,8 @@
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                            data-parsley-trigger="change"
                                            data-parsley-type-message="Неккоректный email"
-                                           <?if(isset($comments["error_message"])):?>
-                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                               data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                            <?endif;?>
                                     >
                                 <?endforeach;?>
@@ -209,12 +191,12 @@
                                                     data-parsley-trigger="click"
                                                     data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                     <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                                    <?if(isset($comments["min_message"])):?>data-parsley-mincheck-message="<?=$comments["min_message"]?>"<?endif;?>
-                                                    <?if(isset($comments["max_message"])):?>data-parsley-maxcheck-message="<?=$comments["max_message"]?>"<?endif;?>
-                                                    <?if(isset($comments["mincheck"])):?>data-parsley-mincheck="<?=$comments["mincheck"]?>"<?endif;?>
-                                                    <?if(isset($comments["maxcheck"])):?>data-parsley-maxcheck="<?=$comments["maxcheck"]?>"<?endif;?>
-                                                    <?if(isset($comments["error_message"])):?>
-                                                        data-parsley-required-message="<?=$comments["error_message"]?>"
+                                                    <?if(isset($arQuestion["COMMENTS"]["min_message"])):?>data-parsley-mincheck-message="<?=$arQuestion["COMMENTS"]["min_message"]?>"<?endif;?>
+                                                    <?if(isset($arQuestion["COMMENTS"]["max_message"])):?>data-parsley-maxcheck-message="<?=$arQuestion["COMMENTS"]["max_message"]?>"<?endif;?>
+                                                    <?if(isset($arQuestion["COMMENTS"]["mincheck"])):?>data-parsley-mincheck="<?=$arQuestion["COMMENTS"]["mincheck"]?>"<?endif;?>
+                                                    <?if(isset($arQuestion["COMMENTS"]["maxcheck"])):?>data-parsley-maxcheck="<?=$arQuestion["COMMENTS"]["maxcheck"]?>"<?endif;?>
+                                                    <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                                        data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                                     <?else:?>
                                                         data-parsley-required-message="Выберите"
                                                     <?endif;?>
@@ -251,8 +233,8 @@
                                                    value="<?=$arQuestion["REQUEST_VALUE"]?>"
                                                    data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                                    <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                                   <?if(isset($comments["error_message"])):?>
-                                                       data-parsley-required-message="<?=$comments["error_message"]?>"
+                                                   <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                                       data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                                    <?else:?>
                                                        data-parsley-required-message="Выберите дату"
                                                    <?endif;?>
@@ -273,8 +255,8 @@
                                            name="<?=$answer["INPUT_NAME"]?>"
                                            data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                           <?if(isset($comments["error_message"])):?>
-                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                               data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                            <?else:?>
                                                data-parsley-required-message="Выберите изображение"
                                            <?endif;?>
@@ -288,8 +270,8 @@
                                            name="<?=$answer["INPUT_NAME"]?>"
                                            data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                           <?if(isset($comments["error_message"])):?>
-                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                               data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                            <?else:?>
                                                data-parsley-required-message="Выберите файл"
                                            <?endif;?>
@@ -305,8 +287,8 @@
                                            value="<?=$arQuestion["REQUEST_VALUE"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
                                            data-parsley-type="url"
-                                           <?if(isset($comments["error_message"])):?>
-                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                               data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                            <?else:?>
                                                data-parsley-required-message="Введите URL"
                                            <?endif;?>
@@ -321,12 +303,12 @@
                                            data-parsley-errors-container="#<?=$arQuestion["ERROR_INPUT_ID"]?>"
                                            value="<?=$arQuestion["REQUEST_VALUE"]?>"
                                            <?if($arQuestion["REQUIRED"] == "Y"):?>required=""<?endif;?>
-                                           <?if(isset($comments["min_message"])):?>data-parsley-mincheck-message="<?=$comments["min_message"]?>"<?endif;?>
-                                           <?if(isset($comments["max_message"])):?>data-parsley-maxcheck-message="<?=$comments["max_message"]?>"<?endif;?>
-                                           <?if(isset($comments["mincheck"])):?>data-parsley-mincheck="<?=$comments["mincheck"]?>"<?endif;?>
-                                           <?if(isset($comments["maxcheck"])):?>data-parsley-maxcheck="<?=$comments["maxcheck"]?>"<?endif;?>
-                                           <?if(isset($comments["error_message"])):?>
-                                               data-parsley-required-message="<?=$comments["error_message"]?>"
+                                           <?if(isset($arQuestion["COMMENTS"]["min_message"])):?>data-parsley-mincheck-message="<?=$arQuestion["COMMENTS"]["min_message"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["max_message"])):?>data-parsley-maxcheck-message="<?=$arQuestion["COMMENTS"]["max_message"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["mincheck"])):?>data-parsley-mincheck="<?=$arQuestion["COMMENTS"]["mincheck"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["maxcheck"])):?>data-parsley-maxcheck="<?=$arQuestion["COMMENTS"]["maxcheck"]?>"<?endif;?>
+                                           <?if(isset($arQuestion["COMMENTS"]["error_message"])):?>
+                                               data-parsley-required-message="<?=$arQuestion["COMMENTS"]["error_message"]?>"
                                            <?else:?>
                                                data-parsley-required-message="Введите пароль"
                                            <?endif;?>
