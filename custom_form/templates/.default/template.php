@@ -376,7 +376,7 @@
         $('.captcha-block').on('click', '.reloadCaptcha', function(){
             var $parent = $(this).closest('.captcha-block');
 
-            $.getJSON('/ajax/reload_captcha.php', function(data) {
+            $.getJSON( '<?=$componentPath?>/reload_captcha.php', function(data) {
                 console.log(data);
                 $parent.find('.captchaImg').attr('src','/bitrix/tools/captcha.php?captcha_sid=' + data.code);
                 $parent.find('.captchaSid').val(data.code);
@@ -410,7 +410,7 @@
 
                 var $parent = $('.captcha-block').closest('.captcha-block');
 
-                $.getJSON( '/ajax/reload_captcha.php', { cap_sid: cap_sid, cap_word: cap_word } )
+                $.getJSON( '<?=$componentPath?>/reload_captcha.php', { cap_sid: cap_sid, cap_word: cap_word } )
                     .done(function( json ) {
 
                         console.log(json);
@@ -438,7 +438,7 @@
                                     that.reset();
 
                                     // var $parent = $('.captcha-block').closest('.captcha-block');
-                                    $.getJSON('/ajax/reload_captcha.php', function (data) {
+                                    $.getJSON('<?=$componentPath?>/reload_captcha.php', function (data) {
                                         $parent.find('.captchaImg').attr('src', '/bitrix/tools/captcha.php?captcha_sid=' + data.code);
                                         $parent.find('.captchaSid').val(data.code);
                                     });
@@ -476,7 +476,7 @@
                         that.reset();
 
                         var $parent = $('.captcha-block').closest('.captcha-block');
-                        $.getJSON('/ajax/reload_captcha.php', function (data) {
+                        $.getJSON('<?=$componentPath?>/reload_captcha.php', function (data) {
                             $parent.find('.captchaImg').attr('src', '/bitrix/tools/captcha.php?captcha_sid=' + data.code);
                             $parent.find('.captchaSid').val(data.code);
                         });
